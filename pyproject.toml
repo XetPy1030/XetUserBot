@@ -8,6 +8,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 telethon = "^1.38.1"
+tortoise-orm = {extras = ["asyncpg"], version = "^0.22.0"}
+loguru = "^0.7.2"
 
 
 [build-system]
