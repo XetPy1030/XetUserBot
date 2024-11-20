@@ -4,8 +4,8 @@ from tortoise import models, fields
 class GoalTimeMessageChat(models.Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(max_length=255)
-    chat_id = fields.IntField()
-    message_id = fields.IntField()
+    chat_id = fields.BigIntField()
+    message_id = fields.BigIntField()
     goal_time = fields.DatetimeField()
 
     last_text = fields.TextField()
