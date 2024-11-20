@@ -48,3 +48,22 @@ async def goals_handler(event: events.NewMessage.Event):
     goals = await GoalTimeMessageChat.all()
     goals_text = "\n".join([f"{goal.name}({goal.id}): {goal.last_text}" for goal in goals])
     await event.respond(goals_text or "No goals")
+
+
+async def force_new_goal_handler(event: events.NewMessage.Event):
+    cmd, name, chat_id, message_id, goal_time_text = event.text.split(" ", 4)
+    chat_id = int(chat_id)
+    message_id = int(message_id)
+    goal_time = datetime.fromisoformat(goal_time_text)
+
+    last_text = arrow.get(goal_time).humanize(locale=DEFAULT_LOCALE)
+    goal = await GoalTimeMessageChat.create(
+        name=name,
+        chat_id=chat_id,
+        message_id=message_id,
+        goal_time=goal_time,
+        last_text=last_text,
+    )
+    logger.info(f"Goal created: {goal}")
+
+    await event.respond("Goal created")
