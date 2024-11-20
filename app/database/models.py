@@ -8,6 +8,9 @@ class GoalTimeMessageChat(models.Model):
     message_id = fields.IntField()
     goal_time = fields.DatetimeField()
 
+    last_text = fields.TextField()
+    is_active = fields.BooleanField(default=True)
+
     created_at = fields.DatetimeField(auto_now_add=True)
 
     class Meta:

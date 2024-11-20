@@ -15,10 +15,14 @@ ENV POETRY_VERSION=1.6.1
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
 # Добавляем Poetry в PATH
-ENV PATH="/root/.local/bin:$PATH"
+ENV PATH="${PATH}:/root/.local/bin"
 
 # Копируем файлы проекта в контейнер
 COPY pyproject.toml poetry.lock ./
+
+# Настраиваем Poetry
+RUN poetry config virtualenvs.create false
+RUN poetry config installer.max-workers 10
 
 # Устанавливаем зависимости проекта
 RUN poetry install --no-root --only main

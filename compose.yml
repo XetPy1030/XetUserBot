@@ -5,53 +5,59 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: app
+    container_name: ub-app
     volumes:
       - .:/app
     command: python main.py
     depends_on:
       - redis
+      - postgres
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DB_URL=postgres://postgres:postgres@postgres:5432/postgres
 
   celery:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: celery
+    container_name: ub-celery
     volumes:
       - .:/app
-    command: celery -A main worker --loglevel=info
+    command: celery -A app.tasks.celery_app worker --loglevel=info
     depends_on:
       - redis
+      - postgres
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DB_URL=postgres://postgres:postgres@postgres:5432/postgres
 
   celery_beat:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: celery_beat
+    container_name: ub-celery-beat
     volumes:
       - .:/app
-    command: celery -A main beat --loglevel=info
+    command: celery -A app.tasks.celery_app beat --loglevel=info
     depends_on:
       - redis
+      - postgres
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DB_URL=postgres://postgres:postgres@postgres:5432/postgres
 
   redis:
     image: redis:6.2
-    container_name: redis
+    container_name: ub-redis
     ports:
       - "6379:6379"
 
   postgres:
     image: postgres:17
-    container_name: postgres
+    container_name: ub-postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
