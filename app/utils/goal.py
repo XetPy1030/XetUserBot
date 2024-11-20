@@ -1,6 +1,7 @@
+from contextlib import asynccontextmanager
+
 import arrow
 from loguru import logger
-from telethon import TelegramClient
 from tortoise.timezone import now
 
 from app.database import GoalTimeMessageChat
@@ -40,9 +41,17 @@ def format_goal_message(goal_text: str):
 
 
 async def edit_message(chat: GoalTimeMessageChat, message: str):
+    async with celery_tg_client() as tg_client:
+        tg_chat = await tg_client.get_entity(chat.chat_id)
+        tg_message = await tg_client.get_messages(tg_chat, ids=chat.message_id)
+        await tg_message.edit(message)
+
+
+@asynccontextmanager
+async def celery_tg_client():
     tg_client = generate_client('session_celery')
     await start_telegram_client(tg_client)
-
-    tg_chat = await tg_client.get_entity(chat.chat_id)
-    tg_message = await tg_client.get_messages(tg_chat, ids=chat.message_id)
-    await tg_message.edit(message)
+    try:
+        yield tg_client
+    finally:
+        await tg_client.disconnect()
