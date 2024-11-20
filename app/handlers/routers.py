@@ -45,7 +45,7 @@ async def new_goal_handler(event: events.NewMessage.Event):
 
 
 async def goals_handler(event: events.NewMessage.Event):
-    goals = await GoalTimeMessageChat.all()
+    goals = await GoalTimeMessageChat.filter(is_active=True).all()
     goals_text = "\n".join([f"{goal.name}({goal.id}): {goal.last_text}" for goal in goals])
     await event.respond(goals_text or "No goals")
 
