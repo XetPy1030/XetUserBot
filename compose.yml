@@ -67,7 +67,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ub-postgres:/var/lib/postgresql/data
+      - ub-postgres:/data/postgres
 
 volumes:
   ub-redis:
