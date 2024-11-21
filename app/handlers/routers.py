@@ -56,13 +56,12 @@ async def force_new_goal_handler(event: events.NewMessage.Event):
     message_id = int(message_id)
     goal_time = datetime.fromisoformat(goal_time_text)
 
-    last_text = arrow.get(goal_time).humanize(locale=DEFAULT_LOCALE)
     goal = await GoalTimeMessageChat.create(
         name=name,
         chat_id=chat_id,
         message_id=message_id,
         goal_time=goal_time,
-        last_text=last_text,
+        last_text="",
     )
     logger.info(f"Goal created: {goal}")
 
