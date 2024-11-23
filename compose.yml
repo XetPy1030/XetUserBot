@@ -13,8 +13,8 @@ services:
       - redis
       - postgres
     environment:
-      - CELERY_BROKER_URL=redis://:my_redis_password@redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://:my_redis_password@redis:6379/0
+      - CELERY_BROKER_URL=redis://:my_ub_bot_password@redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://:my_ub_bot_password@redis:6379/0
       - DB_URL=postgres://postgres:postgres@postgres:5432/postgres
 
   celery:
@@ -29,8 +29,8 @@ services:
       - redis
       - postgres
     environment:
-      - CELERY_BROKER_URL=redis://:my_redis_password@redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://:my_redis_password@redis:6379/0
+      - CELERY_BROKER_URL=redis://:my_ub_bot_password@redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://:my_ub_bot_password@redis:6379/0
       - DB_URL=postgres://postgres:postgres@postgres:5432/postgres
 
   celery_beat:
@@ -45,8 +45,8 @@ services:
       - redis
       - postgres
     environment:
-      - CELERY_BROKER_URL=redis://:my_redis_password@redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://:my_redis_password@redis:6379/0
+      - CELERY_BROKER_URL=redis://:my_ub_bot_password@redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://:my_ub_bot_password@redis:6379/0
       - DB_URL=postgres://postgres:postgres@postgres:5432/postgres
 
   redis:
@@ -56,7 +56,7 @@ services:
       - "6379:6379"
     volumes:
       - ub-redis:/data
-    command: ["redis-server", "--requirepass", "my_redis_password"]
+    command: ["redis-server", "--requirepass", "my_ub_bot_password"]
 
   postgres:
     image: postgres:17
