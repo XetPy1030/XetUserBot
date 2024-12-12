@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime
 
 import arrow
@@ -7,6 +8,12 @@ from telethon import events
 from app.database import GoalTimeMessageChat
 from app.settings import DEFAULT_LOCALE
 from app.utils.goal import format_goal_message
+
+
+async def ping_handler(event: events.NewMessage.Event):
+    await event.respond("Pong")
+    await asyncio.sleep(5)
+    await event.delete()
 
 
 async def id_handler(event: events.NewMessage.Event):
