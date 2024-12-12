@@ -11,9 +11,10 @@ from app.utils.goal import format_goal_message
 
 
 async def ping_handler(event: events.NewMessage.Event):
-    await event.respond("Pong")
+    respond = await event.respond("Pong")
     await asyncio.sleep(5)
     await event.delete()
+    await respond.delete()
 
 
 async def id_handler(event: events.NewMessage.Event):
