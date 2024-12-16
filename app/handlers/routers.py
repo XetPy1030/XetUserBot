@@ -18,8 +18,7 @@ async def ping_handler(event: events.NewMessage.Event):
 
 
 async def id_handler(event: events.NewMessage.Event):
-    chat = await event.get_chat()
-    await event.respond(f"Chat id: {chat.id}")
+    await event.respond(f"Chat id: {event.chat_id}")
 
     reply = await event.get_reply_message()
     if reply:
@@ -38,11 +37,10 @@ async def new_goal_handler(event: events.NewMessage.Event):
     cmd, goal_time_text, goal_name = event.text.split(" ", 2)
     goal_time = datetime.fromisoformat(goal_time_text)
 
-    chat = await event.get_chat()
     last_text = arrow.get(goal_time).humanize(locale=DEFAULT_LOCALE)
     goal = await GoalTimeMessageChat.create(
         name=goal_name,
-        chat_id=chat.id,
+        chat_id=event.chat_id,
         message_id=event.id,
         goal_time=goal_time,
         last_text=last_text,
