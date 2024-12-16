@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 import arrow
 from loguru import logger
+from telethon.tl.types import PeerUser
 from tortoise.timezone import now
 
 from app.database import GoalTimeMessageChat
@@ -42,7 +43,11 @@ def format_goal_message(goal_text: str):
 
 async def edit_message(chat: GoalTimeMessageChat, message: str):
     async with celery_tg_client() as tg_client:
-        tg_chat = await tg_client.get_entity(chat.chat_id)
+        try:
+            tg_chat = await tg_client.get_entity(chat.chat_id)
+        except ValueError:
+            tg_chat = await tg_client.get_entity(PeerUser(chat.chat_id))
+
         tg_message = await tg_client.get_messages(tg_chat, ids=chat.message_id)
         await tg_message.edit(message)
 
