@@ -24,4 +24,8 @@ CELERY_BEAT_SCHEDULE = {
         "task": "app.tasks.tasks.check_update_goal_task",
         "schedule": crontab(minute="*"),
     },
+    "check_update_repeat": {
+        "task": "app.tasks.tasks.check_update_repeat_task",
+        "schedule": crontab(minute="*"),
+    },
 }
