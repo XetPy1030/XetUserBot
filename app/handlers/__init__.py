@@ -11,3 +11,6 @@ def setup_routers():
     client.on(events.NewMessage(pattern='!new_goal', outgoing=True))(routers.new_goal_handler)
     client.on(events.NewMessage(pattern='!goals', outgoing=True))(routers.goals_handler)
     client.on(events.NewMessage(pattern='!force_new_goal', outgoing=True))(routers.force_new_goal_handler)
+    client.on(events.NewMessage(pattern='!repeat', outgoing=True))(routers.repeat_handler)
+    client.on(events.NewMessage(pattern='!disable_repeat', outgoing=True))(routers.disable_repeat_handler)
+    client.on(events.NewMessage(pattern='!repeats', outgoing=True))(routers.repeats_handler)

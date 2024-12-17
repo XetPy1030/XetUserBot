@@ -1,14 +1,10 @@
 from tortoise import Tortoise
 
-from app.database.models import GoalTimeMessageChat
-from app.settings import DB_URL
+from app.database.settings import TORTOISE_ORM
 
 
 async def init():
-    await Tortoise.init(
-        db_url=DB_URL,
-        modules={'models': ['app.database.models']}
-    )
+    await Tortoise.init(TORTOISE_ORM)
     # Генерируем схемы
     await Tortoise.generate_schemas()
 

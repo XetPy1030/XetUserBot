@@ -1,13 +1,10 @@
-from contextlib import asynccontextmanager
-
 import arrow
-import telethon.errors.rpcerrorlist
 from loguru import logger
 from tortoise.timezone import now
 
-from app.database import GoalTimeMessageChat
+from app.database.models import GoalTimeMessageChat
 from app.settings import DEFAULT_LOCALE
-from app.telegram_client import generate_client, start_telegram_client
+from app.utils.tg import edit_message
 
 GOAL_MESSAGE_FORMAT = "{time}."
 
@@ -23,7 +20,7 @@ async def check_update_goal():
             chat.is_active = False
             await chat.save()
 
-            await edit_message(chat, "Время вышло.")
+            await edit_message(chat.chat_id, chat.message_id, "Время вышло.")
 
             continue
 
@@ -34,30 +31,8 @@ async def check_update_goal():
             chat.last_text = text
             await chat.save()
 
-            await edit_message(chat, format_goal_message(text))
+            await edit_message(chat.chat_id, chat.message_id, format_goal_message(text))
 
 
 def format_goal_message(goal_text: str):
     return GOAL_MESSAGE_FORMAT.format(time=goal_text).capitalize()
-
-
-async def edit_message(chat: GoalTimeMessageChat, message: str):
-    async with celery_tg_client() as tg_client:
-        tg_chat = await tg_client.get_entity(chat.chat_id)
-
-        tg_message = await tg_client.get_messages(tg_chat, ids=chat.message_id)
-
-        try:
-            await tg_message.edit(message)
-        except telethon.errors.rpcerrorlist.MessageEditTimeExpiredError:
-            logger.error(f"Не удалось отредактировать сообщение {chat.chat_id} {chat.message_id}: время истекло")
-
-
-@asynccontextmanager
-async def celery_tg_client():
-    tg_client = generate_client('session_celery')
-    await start_telegram_client(tg_client)
-    try:
-        yield tg_client
-    finally:
-        await tg_client.disconnect()

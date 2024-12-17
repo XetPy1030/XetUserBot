@@ -15,3 +15,18 @@ class GoalTimeMessageChat(models.Model):
 
     class Meta:
         table = "goal_time_message_chat"
+
+
+class RepeatMessage(models.Model):
+    id = fields.IntField(pk=True)
+    text = fields.TextField()
+    chat_id = fields.BigIntField()
+    repeat_time = fields.TimeDeltaField()
+
+    last_send = fields.DatetimeField(null=True)
+    is_active = fields.BooleanField(default=True)
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+    class Meta:
+        table = "repeat_message"

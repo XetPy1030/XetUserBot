@@ -5,9 +5,10 @@ import arrow
 from loguru import logger
 from telethon import events
 
-from app.database import GoalTimeMessageChat
+from app.database.models import GoalTimeMessageChat, RepeatMessage
 from app.settings import DEFAULT_LOCALE
 from app.utils.goal import format_goal_message
+from app.utils.time import parse_timedelta
 
 
 async def ping_handler(event: events.NewMessage.Event):
@@ -72,3 +73,38 @@ async def force_new_goal_handler(event: events.NewMessage.Event):
     logger.info(f"Goal created: {goal}")
 
     await event.respond("Goal created")
+
+
+async def repeat_handler(event: events.NewMessage.Event):
+    cmd, time_text, text = event.text.split(" ", 2)
+    time = parse_timedelta(time_text)
+
+    repeat = await RepeatMessage.create(
+        text=text,
+        chat_id=event.chat_id,
+        time=time,
+    )
+    logger.info(f"Repeat created: {repeat}")
+
+    await event.respond("Repeat created")
+
+
+async def disable_repeat_handler(event: events.NewMessage.Event):
+    cmd, repeat_id = event.text.split(" ", 1)
+    repeat_id = int(repeat_id)
+
+    repeat = await RepeatMessage.get_or_none(id=repeat_id)
+    if repeat:
+        repeat.is_active = False
+        await repeat.save()
+        logger.info(f"Repeat disabled: {repeat}")
+
+        await event.respond("Repeat disabled")
+    else:
+        await event.respond("Repeat not found")
+
+
+async def repeats_handler(event: events.NewMessage.Event):
+    repeats = await RepeatMessage.filter(is_active=True).all()
+    repeats_text = "\n".join([f"{repeat.id}: {repeat.text}({repeat.repeat_time})" for repeat in repeats])
+    await event.respond(repeats_text or "No active repeats")
