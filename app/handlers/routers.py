@@ -77,12 +77,12 @@ async def force_new_goal_handler(event: events.NewMessage.Event):
 
 async def repeat_handler(event: events.NewMessage.Event):
     cmd, time_text, text = event.text.split(" ", 2)
-    time = parse_timedelta(time_text)
+    repeat_time = parse_timedelta(time_text)
 
     repeat = await RepeatMessage.create(
         text=text,
         chat_id=event.chat_id,
-        time=time,
+        repeat_time=repeat_time,
     )
     logger.info(f"Repeat created: {repeat}")
 
