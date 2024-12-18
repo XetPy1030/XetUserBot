@@ -1,9 +1,11 @@
 import asyncio
 
-from app.telegram_client import start_telegram_client, client, celery_client
+from app.telegram_client import start_telegram_client, client, generate_client
 
 
 async def main():
+    celery_client = generate_client('session_celery')
+
     await start_telegram_client(client)
     await start_telegram_client(celery_client)
 
