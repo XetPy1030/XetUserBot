@@ -1,3 +1,4 @@
+from asyncpg.pgproto.pgproto import timedelta
 from loguru import logger
 from tortoise.timezone import now
 
@@ -10,7 +11,11 @@ async def check_update_repeat():
     for repeat_message in repeat_messages:
         repeat_message: RepeatMessage
 
-        if repeat_message.last_send is None or repeat_message.last_send + repeat_message.repeat_time < now():
+        if (
+            repeat_message.last_send is None or
+            # - 10 секунд, чтобы не пропустить сообщение
+            (repeat_message.last_send + repeat_message.repeat_time - timedelta(seconds=10)) < now()
+        ):
             logger.info(f"Отправляем сообщение для {repeat_message.chat}({repeat_message.id})")
 
             await send_message(repeat_message.chat, repeat_message.text)
