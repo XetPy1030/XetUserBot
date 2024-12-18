@@ -10,7 +10,7 @@ from app.telegram_client import generate_client, start_telegram_client
 async def edit_message(chat_id, message_id, message_text: str):
     async with celery_tg_client() as tg_client:
         tg_client: TelegramClient
-        tg_chat = await tg_client.get_entity(chat_id)
+        tg_chat = await tg_client.get_input_entity(chat_id)
 
         tg_message = await tg_client.get_messages(tg_chat, ids=message_id)
 
@@ -23,7 +23,7 @@ async def edit_message(chat_id, message_id, message_text: str):
 async def send_message(chat_id, message_text: str):
     async with celery_tg_client() as tg_client:
         tg_client: TelegramClient
-        tg_chat = await tg_client.get_entity(chat_id)
+        tg_chat = await tg_client.get_input_entity(chat_id)
 
         await tg_client.send_message(tg_chat, message_text)
 

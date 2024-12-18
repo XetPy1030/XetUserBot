@@ -4,6 +4,7 @@ from datetime import datetime
 import arrow
 from loguru import logger
 from telethon import events
+from telethon.tl.types import User
 
 from app.database.models import GoalTimeMessageChat, RepeatMessage
 from app.settings import DEFAULT_LOCALE
@@ -79,9 +80,17 @@ async def repeat_handler(event: events.NewMessage.Event):
     cmd, time_text, text = event.text.split(" ", 2)
     repeat_time = parse_timedelta(time_text)
 
+    chat = await event.get_chat()
+    username = chat_id = None
+    if isinstance(chat, User) and chat.bot:
+        username = chat.username
+    else:
+        chat_id = event.chat_id
+
     repeat = await RepeatMessage.create(
         text=text,
-        chat_id=event.chat_id,
+        chat_id=chat_id,
+        username=username,
         repeat_time=repeat_time,
     )
     logger.info(f"Repeat created: {repeat}")
