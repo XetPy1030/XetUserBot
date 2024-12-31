@@ -13,7 +13,11 @@ async def check_schedule():
         if schedule.send_time < now():
             logger.info(f"Отправляем сообщение для {schedule.chat}({schedule.id})")
 
-            await send_message(schedule.chat, schedule.text)
+            try:
+                await send_message(schedule.chat, schedule.text)
+            except Exception as e:
+                logger.error(f"Ошибка при отправке сообщения для {schedule.chat}({schedule.id}): {e}")
+                continue
 
             schedule.is_active = False
             await schedule.save()
