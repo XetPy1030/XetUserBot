@@ -18,7 +18,11 @@ async def check_update_repeat():
         ):
             logger.info(f"Отправляем сообщение для {repeat_message.chat}({repeat_message.id})")
 
-            await send_message(repeat_message.chat, repeat_message.text)
+            try:
+                await send_message(repeat_message.chat, repeat_message.text)
+            except Exception as e:
+                logger.error(f"Ошибка при отправке сообщения для {repeat_message.chat}({repeat_message.id}): {e}")
+                continue
 
             repeat_message.last_send = now()
             await repeat_message.save()
