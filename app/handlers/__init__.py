@@ -3,6 +3,7 @@ from telethon import events
 import app.handlers.common
 import app.handlers.goals
 import app.handlers.repeats
+import app.handlers.schedules
 from app.handlers import routers
 from app.handlers.help import help_handler
 from app.telegram_client import client

@@ -20,4 +20,7 @@ routers = [
     Router('repeat', handlers.repeats.repeat_handler, 'Create repeat message'),
     Router('disable_repeat', handlers.repeats.disable_repeat_handler, 'Disable repeat message'),
     Router('repeats', handlers.repeats.repeats_handler, 'List all repeat messages'),
+    Router('new_schedule', handlers.schedules.new_schedule_handler, 'Create schedule message'),
+    Router('disable_schedule', handlers.schedules.disable_schedule_handler, 'Disable schedule message'),
+    Router('schedules', handlers.schedules.schedules_handler, 'List all schedule messages'),
 ]

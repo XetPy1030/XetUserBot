@@ -28,4 +28,8 @@ CELERY_BEAT_SCHEDULE = {
         "task": "app.tasks.tasks.check_update_repeat_task",
         "schedule": crontab(minute="*"),
     },
+    "check_schedule": {
+        "task": "app.tasks.tasks.check_schedule_task",
+        "schedule": crontab(minute="*"),
+    },
 }

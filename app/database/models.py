@@ -35,3 +35,23 @@ class RepeatMessage(models.Model):
 
     class Meta:
         table = "repeat_message"
+
+
+class ScheduleMessage(models.Model):
+    id = fields.IntField(pk=True)
+
+    text = fields.TextField()
+    chat_id = fields.BigIntField()
+    username = fields.CharField(max_length=255)
+    send_time = fields.DatetimeField()
+
+    is_active = fields.BooleanField(default=True)
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+    @property
+    def chat(self):
+        return self.chat_id or self.username
+
+    class Meta:
+        table = "schedule_message"
