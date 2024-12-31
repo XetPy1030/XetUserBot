@@ -41,8 +41,8 @@ class ScheduleMessage(models.Model):
     id = fields.IntField(pk=True)
 
     text = fields.TextField()
-    chat_id = fields.BigIntField()
-    username = fields.CharField(max_length=255)
+    chat_id = fields.BigIntField(null=True)
+    username = fields.CharField(max_length=255, null=True)
     send_time = fields.DatetimeField()
 
     is_active = fields.BooleanField(default=True)
