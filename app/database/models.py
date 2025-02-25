@@ -55,3 +55,17 @@ class ScheduleMessage(models.Model):
 
     class Meta:
         table = "schedule_message"
+
+
+class ReactionText(models.Model):
+    id = fields.IntField(pk=True)
+
+    text = fields.TextField()
+    reaction = fields.CharField(max_length=255)
+
+    is_active = fields.BooleanField(default=True)
+
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+    class Meta:
+        table = "reaction_text"
