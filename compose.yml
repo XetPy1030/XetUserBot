@@ -10,42 +10,31 @@ services:
     depends_on:
       - redis
       - postgres
-    environment:
+    environment: &common-env
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-      - DB_URL=${DB_URL}
+      - POSTGRES_HOST=postgres
 
-  celery:
+  celery: &celery-base
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ub-celery
     volumes:
       - .:/app
-    command: celery -A app.tasks.celery_app worker --loglevel=info
     depends_on:
       - redis
       - postgres
-    environment:
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-      - DB_URL=${DB_URL}
+    environment: *common-env
+
+  celery_worker:
+    <<: *celery-base
+    container_name: ub-celery
+    command: celery -A app.tasks.celery_app worker --loglevel=info
 
   celery_beat:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    <<: *celery-base
     container_name: ub-celery-beat
-    volumes:
-      - .:/app
     command: celery -A app.tasks.celery_app beat --loglevel=info
-    depends_on:
-      - redis
-      - postgres
-    environment:
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-      - DB_URL=${DB_URL}
 
   celery_flower:
     image: mher/flower
@@ -55,16 +44,11 @@ services:
     depends_on:
       - redis
       - postgres
-    environment:
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-      - DB_URL=${DB_URL}
+    environment: *common-env
 
   redis:
     image: redis:6.2
     container_name: ub-redis
-    ports:
-      - "6379:6379"
     volumes:
       - ub-redis:/data
     command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
@@ -76,8 +60,6 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
     volumes:
       - ub-postgres:/var/lib/postgresql/data
 

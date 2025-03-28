@@ -12,7 +12,11 @@ TELEGRAM_PASSWORD = os.getenv("TELEGRAM_PASSWORD")
 
 os.environ.setdefault("USE_TZ", "True")
 
-DB_URL = os.getenv("DB_URL") or "postgres://postgres:postgres@localhost:5432/postgres"
+POSTGRES_USER = os.getenv("POSTGRES_USER") or "postgres"
+POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD") or "postgres"
+POSTGRES_DB = os.getenv("POSTGRES_DB") or "postgres"
+POSTGRES_HOST = os.getenv("POSTGRES_HOST") or "localhost"
+POSTGRES_PORT = os.getenv("POSTGRES_PORT") or 5432
 
 DEFAULT_LOCALE = "ru"
 
