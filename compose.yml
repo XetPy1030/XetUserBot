@@ -14,6 +14,7 @@ services:
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
       - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
       - POSTGRES_HOST=postgres
+    restart: unless-stopped
 
   celery: &celery-base
     build:
@@ -25,16 +26,19 @@ services:
       - redis
       - postgres
     environment: *common-env
+    restart: unless-stopped
 
   celery_worker:
     <<: *celery-base
     container_name: ub-celery
     command: celery -A app.tasks.celery_app worker --loglevel=info
+    restart: unless-stopped
 
   celery_beat:
     <<: *celery-base
     container_name: ub-celery-beat
     command: celery -A app.tasks.celery_app beat --loglevel=info
+    restart: unless-stopped
 
   celery_flower:
     image: mher/flower
@@ -45,6 +49,7 @@ services:
       - redis
       - postgres
     environment: *common-env
+    restart: unless-stopped
 
   redis:
     image: redis:6.2
@@ -52,6 +57,7 @@ services:
     volumes:
       - ub-redis:/data
     command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    restart: unless-stopped
 
   postgres:
     image: postgres:12
@@ -62,6 +68,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ub-postgres:/var/lib/postgresql/data
+    restart: unless-stopped
 
 volumes:
   ub-redis:
