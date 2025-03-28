@@ -2,33 +2,25 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Устанавливаем зависимости для системы (например, для Poetry и компиляции пакетов)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
-    libffi-dev \
-    libssl-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Установка системных зависимостей
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        libffi-dev \
+        libssl-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем Poetry
-ENV POETRY_VERSION=1.6.1
-RUN curl -sSL https://install.python-poetry.org | python3 -
+# Установка и настройка Poetry
+ENV POETRY_VERSION=1.6.1 \
+    PATH="${PATH}:/root/.local/bin"
+RUN curl -sSL https://install.python-poetry.org | python3 - && \
+    poetry config virtualenvs.create false && \
+    poetry config installer.max-workers 10
 
-# Добавляем Poetry в PATH
-ENV PATH="${PATH}:/root/.local/bin"
-
-# Копируем файлы проекта в контейнер
+# Установка зависимостей проекта
 COPY pyproject.toml poetry.lock ./
-
-# Настраиваем Poetry
-RUN poetry config virtualenvs.create false
-RUN poetry config installer.max-workers 10
-
-# Устанавливаем зависимости проекта
 RUN poetry install --no-root --only main
 
-# Копируем оставшиеся файлы проекта в контейнер
+# Копирование исходного кода
 COPY . .
-
-# Определяем команду по умолчанию для контейнера
-CMD ["poetry", "run", "python", "main.py"]
