@@ -16,7 +16,7 @@ services:
       - POSTGRES_HOST=postgres
     restart: unless-stopped
 
-  celery: &celery-base
+  x-celery-base: &celery-base
     build:
       context: .
       dockerfile: Dockerfile
