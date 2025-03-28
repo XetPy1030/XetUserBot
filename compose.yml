@@ -1,41 +1,32 @@
+x-app-base: &app-base
+  build:
+    context: .
+    dockerfile: Dockerfile
+  volumes:
+    - .:/app
+  depends_on:
+    - redis
+    - postgres
+  environment: &common-env
+    - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+    - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+    - POSTGRES_HOST=postgres
+  restart: unless-stopped
+
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    <<: *app-base
     container_name: ub-app
-    volumes:
-      - .:/app
     command: python main.py
-    depends_on:
-      - redis
-      - postgres
-    environment: &common-env
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
-      - POSTGRES_HOST=postgres
-    restart: unless-stopped
-
-  x-celery-base: &celery-base
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - .:/app
-    depends_on:
-      - redis
-      - postgres
-    environment: *common-env
-    restart: unless-stopped
 
   celery_worker:
-    <<: *celery-base
+    <<: *app-base
     container_name: ub-celery
     command: celery -A app.tasks.celery_app worker --loglevel=info
     restart: unless-stopped
 
   celery_beat:
-    <<: *celery-base
+    <<: *app-base
     container_name: ub-celery-beat
     command: celery -A app.tasks.celery_app beat --loglevel=info
     restart: unless-stopped
