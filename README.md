@@ -42,3 +42,37 @@ poetry run python configure_sessions.py
 ```bash
 docker compose up -d
 ```
+
+## Миграции базы данных
+
+Для работы с миграциями используется [Aerich](https://github.com/tortoise/aerich).
+
+### Создание миграции
+
+```bash
+poetry run aerich migrate --name <migration_name>
+```
+
+### Применение миграций
+
+```bash
+poetry run aerich upgrade
+```
+
+### Откат миграции
+
+```bash
+poetry run aerich downgrade
+```
+
+### Просмотр статуса миграций
+
+```bash
+poetry run aerich history
+```
+
+### Просмотр текущей версии
+
+```bash
+poetry run aerich heads
+```

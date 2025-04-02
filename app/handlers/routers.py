@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.handlers import common, goals, repeats, schedules, reaction
+from app.handlers import common, goals, repeats, schedules, reaction, reaction_for_user
 
 
 @dataclass
@@ -24,7 +24,10 @@ routers = [
     Router('new_schedule', schedules.new_schedule_handler, 'Create schedule message', '2025-02-14T03:00:00+03:00 Schedule'),
     Router('disable_schedule', schedules.disable_schedule_handler, 'Disable schedule message', '1'),
     Router('schedules', schedules.schedules_handler, 'List all schedule messages'),
-    Router('new_reaction', reaction.new_reaction_handler, 'Create reaction', 'reaction'),
+    Router('new_reaction', reaction.new_reaction_handler, 'Create reaction', 'reaction trigger_text'),
     Router('disable_reaction', reaction.disable_reaction_handler, 'Disable reaction', '1'),
     Router('reactions', reaction.reactions_handler, 'List all reactions'),
+    Router('new_reaction_for_user', reaction_for_user.new_reaction_for_user_handler, 'Create reaction for user', 'reaction'),
+    Router('disable_reaction_for_user', reaction_for_user.disable_reaction_for_user_handler, 'Disable reaction for user', '1'),
+    Router('reactions_for_user', reaction_for_user.reactions_for_user_handler, 'List all reactions for user'),
 ]
