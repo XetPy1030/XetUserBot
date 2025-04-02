@@ -51,7 +51,7 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgres:12
+    image: postgres:17
     container_name: ub-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
